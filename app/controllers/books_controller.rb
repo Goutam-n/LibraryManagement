@@ -1,38 +1,50 @@
 class BooksController < ApplicationController
 	before_action :authorize_request
 	before_action :find_book, except: %i[create index]
-	before_action :is_admin, except: %i[index show]
 
 	def index
 		@books = Book.all
 		render json: @books, status: :ok
 	end
-
+	
 	def show
 		render json: @book, status: :ok
 	end
-
+	
 	def create
-		@books = Book.create(book_params)
-		if @books.save
-			render json: @books, status: :created
+		if isAdmin
+			@book = Book.create(book_params)
+			if @book.save
+				render json: @book, status: :created
+			else
+				render json: { error: @book.errors.full_messages }, status: :unprocessable_entity
+			end
 		else
-			render json: {error: @books.errors.full_messages}, status: :unprocessable_entity
-		end	
+			render json: { message: "Unauthorized" }, status: :unauthorized
+		end
 	end
-
+	
 	def update
-		unless @book.update(book_params)
-			render json: {error: @books.errors.full_messages}, status: :unprocessable_entity
+		if isAdmin
+			unless @book.update(book_params)
+				render json: { error: @book.errors.full_messages }, status: :unprocessable_entity
+			else
+				render json: { message: "Book updated successfully" }, status: :ok
+			end
 		else
-			render json: { message: "Book updated successfully"}, status: :ok
-		end	
+			render json: { message: "Unauthorized" }, status: :unauthorized
+		end
 	end
-
+	
 	def destroy
-		Book.where(title:params[:_title]).destroy_all
-		render json: {message: "Book destroyed Successfully"}, status: :ok
+		if isAdmin
+			Book.where(title: params[:_title]).destroy_all
+			render json: { message: "Book destroyed Successfully" }, status: :ok
+		else
+			render json: { message: "Unauthorized" }, status: :unauthorized
+		end
 	end
+	
 
 	private
 
@@ -43,6 +55,6 @@ class BooksController < ApplicationController
 	end	
 
 	def book_params
-		params.permit(:title, :author, :status, :librarian_id)
+		params.permit(:title, :author, :quantity).merge(user_id: current_user.id)
 	end	
 end

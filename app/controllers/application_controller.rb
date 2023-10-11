@@ -1,4 +1,6 @@
 class ApplicationController < ActionController::API
+  before_action :authorize_request
+  
   def not_found
     render json: { error: 'not_found' }
   end
@@ -8,26 +10,16 @@ class ApplicationController < ActionController::API
     header = header.split(' ').last if header
     begin
       @decoded = JsonWebToken.decode(header)
-      @current_user = User.find_by(email: @decoded[:email])
+      @current_user = User.find(@decoded[:user_id])
     rescue ActiveRecord::RecordNotFound => e
-			@current_user = Librarian.find_by(email: @decoded[:email])
-			@role = 'admin'
-
-      unless @current_user	
-				render json: { errors: e.message }, status: :unauthorized
-			end	
+      render json: { errors: e.message }, status: :unauthorized
     rescue JWT::DecodeError => e
       render json: { errors: e.message }, status: :unauthorized
     end
-  end 
+  end
 	
-	def is_admin
-		unless @role == 'admin'
-			render json: { message: "unauthorized" }, status: :unauthorized
-		end	
-	end	
+  def isAdmin
+    @current_user.role == 'admin' 
+  end  
+
 end
-
-
-# Initially create a user and its default value will be generalUser 
-# and after logged in as a user we can set it through console to admin 
