@@ -16,7 +16,7 @@ gem "puma", "~> 5.0"
 # gem "jbuilder"
 
 # Use Redis adapter to run Action Cable in production
-# gem "redis", "~> 4.0"
+gem "redis", "~> 4.0"
 
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
@@ -54,3 +54,7 @@ gem "rails-erd", "~> 1.7"
 gem "cancancan", "~> 3.5"
 
 gem "jwt", "~> 2.7"
+
+gem 'sidekiq'
+gem 'letter_opener', group: :development
+gem 'rack'

@@ -1,11 +1,35 @@
 class BooksController < ApplicationController
-	before_action :authorize_request
-	before_action :find_book, except: %i[create index]
+	before_action :authorize_request, except: :search
+	before_action :find_book, except: %i[create index search sort]
 
 	def index
 		@books = Book.all
 		render json: @books, status: :ok
 	end
+
+	def search
+  search_term = params[:search_term]
+
+		if search_term.present?
+			@books = Book.where("title LIKE ?", "%#{search_term}%")
+			render json: @books, status: :ok
+		else
+			render json: { message: "Parameter doesn't match" }, status: :bad_request
+		end
+	end
+
+
+	def sort
+    sort_column = params[:sort_column] || 'id'
+    sort_direction = params[:sort_direction] || 'asc'
+
+    valid_columns = ['id', 'title', 'author', 'quantity']
+    sort_column = valid_columns.include?(sort_column) ? sort_column : 'id'
+
+    @books = Book.order("#{sort_column} #{sort_direction}")
+    
+    render json: @books, status: :ok
+  end
 	
 	def show
 		render json: @book, status: :ok
@@ -55,6 +79,6 @@ class BooksController < ApplicationController
 	end	
 
 	def book_params
-		params.permit(:title, :author, :quantity).merge(user_id: current_user.id)
+		params.permit(:title, :author, :quantity).merge(user_id: @current_user.id)
 	end	
 end

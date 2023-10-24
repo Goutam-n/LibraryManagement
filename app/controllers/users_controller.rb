@@ -12,11 +12,13 @@ class UsersController < ApplicationController
 		end
 
 		def create
-			@users = User.create(user_params)
-			if @users.save
-				render json: @users, status: :created
+			
+			@user = User.new(user_params)
+			if @user.save
+        		EmailSenderWorker.perform_async(@user.id)
+				render json: @user, status: :created
 			else
-				render json: {error: @users.errors.full_messages}, status: :unprocessable_entity
+				render json: {error: @user.errors.full_messages}, status: :unprocessable_entity
 			end	
 		end
 
@@ -42,6 +44,6 @@ class UsersController < ApplicationController
 		end	
 
 		def user_params
-			params.permit(:name, :email, :contact_number, :password, :password_confirmation)
+			params.require(:user).permit(:name, :email, :contact_number, :password, :password_confirmation)
 		end	
 end

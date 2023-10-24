@@ -66,6 +66,8 @@ GEM
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
       tzinfo (~> 2.0)
+    addressable (2.8.5)
+      public_suffix (>= 2.0.2, < 6.0)
     bcrypt (3.1.19)
     bootsnap (1.16.0)
       msgpack (~> 1.2)
@@ -73,6 +75,7 @@ GEM
     cancancan (3.5.0)
     choice (0.2.0)
     concurrent-ruby (1.2.2)
+    connection_pool (2.4.1)
     crass (1.0.6)
     date (3.3.3)
     debug (1.8.0)
@@ -94,6 +97,10 @@ GEM
       rdoc
       reline (>= 0.3.8)
     jwt (2.7.1)
+    launchy (2.5.2)
+      addressable (~> 2.8)
+    letter_opener (1.8.1)
+      launchy (>= 2.2, < 3)
     loofah (2.21.3)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
@@ -124,6 +131,7 @@ GEM
     orm_adapter (0.5.0)
     psych (5.1.0)
       stringio
+    public_suffix (5.0.3)
     puma (5.6.7)
       nio4r (~> 2.0)
     racc (1.7.1)
@@ -166,6 +174,9 @@ GEM
     rake (13.0.6)
     rdoc (6.5.0)
       psych (>= 4.0.0)
+    redis (4.8.1)
+    redis-client (0.17.0)
+      connection_pool
     reline (0.3.9)
       io-console (~> 0.5)
     responders (3.1.0)
@@ -174,6 +185,11 @@ GEM
     rexml (3.2.6)
     ruby-graphviz (1.2.5)
       rexml
+    sidekiq (7.1.6)
+      concurrent-ruby (< 2)
+      connection_pool (>= 2.3.0)
+      rack (>= 2.2.4)
+      redis-client (>= 0.14.0)
     sqlite3 (1.6.6)
       mini_portile2 (~> 2.8.0)
     stringio (3.0.8)
@@ -198,9 +214,13 @@ DEPENDENCIES
   debug
   devise (~> 4.9)
   jwt (~> 2.7)
+  letter_opener
   puma (~> 5.0)
+  rack
   rails (~> 7.0.8)
   rails-erd (~> 1.7)
+  redis (~> 4.0)
+  sidekiq
   sqlite3 (~> 1.4)
   tzinfo-data
 

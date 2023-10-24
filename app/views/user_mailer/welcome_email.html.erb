@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Welcome to Our Company</title>
+</head>
+<body>
+    <header>
+        <!-- Company Logo -->
+        <img src="<%= image_path('Webkorps.png') %>" alt="Company Logo">
+    </header>
+    <main>
+        <h1>Welcome to Our Company. <%= @user.name %>!</h1>
+        <p>Thank you for visiting our website. We're excited to have you here!</p>
+
+        <p>
+        Your Information<br>
+        --------------------------
+        </p>
+        <p>Name: <%= @user.name %></p>
+        <p>Email: <%= @user.email %></p>
+        <p>Phone: <%= @user.contact_number %></p>
+        <p>
+        Thankyou !<br>
+        ----------
+        </p>
+
+        <p>Explore our services and products, and feel free to <a href="https://www.webkorps.com/">visit our website</a> for more information.</p>
+    </main>
+    <footer>
+        <p>&copy; 2023 Our Company</p>
+    </footer>
+</body>
+</html>
